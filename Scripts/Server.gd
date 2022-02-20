@@ -5,6 +5,10 @@ var game_scene = preload("res://Scene/Game.tscn")
 
 var peer = null
 
+func _ready():
+	get_tree().connect("network_peer_connected", self, "_on_player_connected")
+	get_tree().connect("network_peer_disconnected", self, "_on_player_disconnected")
+
 func start_server():
 	$"Start Server".visible = false
 	$"Control Server".visible = true
@@ -15,8 +19,6 @@ func start_server():
 	get_tree().network_peer = null
 	get_tree().network_peer = peer
 	
-	get_tree().connect("network_peer_connected", self, "_on_player_connected")
-	get_tree().connect("network_peer_disconnected", self, "_on_player_disconnected")
 	print("-- Server Online --")
 	
 	var game = game_scene.instance()
@@ -61,16 +63,15 @@ func create_player_proxy(id):
 remote func create_character(id, pos):
 	print(id)
 
-remote func set_character_name(character_name):
-	var id = get_tree().get_rpc_sender_id()
-	var player = get_node("/root/Game/PlayerList/"+ str(id))
+remote func set_character_name(character_id : int, character_name):
+	var player = get_node("/root/Game/PlayerList/"+ str(character_id))
 	if player:
 		player.get_node("Name").text = character_name
 		for p in get_node('/root/Game/PlayerList').get_children():
-			rpc_id(int(p.name), "set_character_name", id, character_name)
+			rpc_id(int(p.name), "set_character_name", character_id, character_name)
 
-remote func set_charater_position(character_position, character_direction):
+remote func set_charater_position(character_position : Vector2, character_direction : Vector2):
 	var id = get_tree().get_rpc_sender_id()
 	var player = get_node("/root/Game/PlayerList/"+ str(id))
 	if player:
-		player.global_positionn = character_position
+		player.global_position = character_position
