@@ -8,11 +8,49 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Object",
+"class": "Account",
+"language": "GDScript",
+"path": "res://Scripts/Bases/Account.gd"
+}, {
+"base": "PlayableCharacter",
+"class": "Character",
+"language": "GDScript",
+"path": "res://Scripts/Bases/Character.gd"
+}, {
+"base": "Object",
+"class": "Creature",
+"language": "GDScript",
+"path": "res://Scripts/Bases/Creature.gd"
+}, {
+"base": "Creature",
+"class": "NoPlayableCharacter",
+"language": "GDScript",
+"path": "res://Scripts/Bases/NoPlayableCharacter.gd"
+}, {
+"base": "Creature",
+"class": "PlayableCharacter",
+"language": "GDScript",
+"path": "res://Scripts/Bases/PlayableCharacter.gd"
+} ]
+_global_script_class_icons={
+"Account": "",
+"Character": "",
+"Creature": "",
+"NoPlayableCharacter": "",
+"PlayableCharacter": ""
+}
+
 [application]
 
 config/name="Projeto Eryn - Servidor"
 run/main_scene="res://Scene/Server.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+DBManager="*res://Scripts/DataBaseManager.gd"
 
 [physics]
 

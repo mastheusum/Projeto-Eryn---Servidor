@@ -137,5 +137,11 @@ margin_right = 192.0
 margin_bottom = 166.0
 text = "Shutdown Server"
 
+[node name="Label" type="Label" parent="."]
+margin_left = 56.0
+margin_top = 392.0
+margin_right = 984.0
+margin_bottom = 504.0
+
 [connection signal="pressed" from="Start Server/Button" to="." method="start_server"]
 [connection signal="pressed" from="Control Server/Shutdown Server" to="." method="shutdown_server"]
