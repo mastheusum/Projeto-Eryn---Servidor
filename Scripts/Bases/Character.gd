@@ -34,15 +34,16 @@ func class_dic():
 		'primary_key' : true,
 		'not_null' : true
 	}
-	dic['creature_name'] = {
-		'data_type' : 'char(30)',
-		'not_null' : true
+	dic['name'] = {
+		'data_type' : 'text',
+		'not_null' : true,
+		'unique' : true
 	}
-	dic['creature_position_x'] = {
+	dic['global_position_x'] = {
 		'data_type' : 'int',
 		'not_null' : true
 	}
-	dic['creature_position_y'] = {
+	dic['global_position_y'] = {
 		'data_type' : 'int',
 		'not_null' : true
 	}

@@ -19,7 +19,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scripts/Bases/Character.gd"
 }, {
-"base": "Object",
+"base": "KinematicBody2D",
 "class": "Creature",
 "language": "GDScript",
 "path": "res://Scripts/Bases/Creature.gd"
@@ -51,6 +51,7 @@ config/icon="res://icon.png"
 [autoload]
 
 DBManager="*res://Scripts/DataBaseManager.gd"
+ConnectionManager="*res://Scripts/ConnectionManager.gd"
 
 [physics]
 

@@ -5,7 +5,6 @@ class_name Account
 var account_id : int
 var username : String
 var password : String
-var logged_in : bool
 
 func class_dic():
 	var dic = Dictionary()
@@ -15,16 +14,12 @@ func class_dic():
 		'not_null' : true
 	}
 	dic['username'] = {
-		'data_type' : 'char(30)',
-		'unique' : true,
-		'not_null' : true
+		'data_type' : 'text',
+		'not_null' : true,
+		'unique' : true
 	}
 	dic['password'] = {
-		'data_type' : 'char(30)',
-		'not_null' : true
-	}
-	dic['logged_in'] = {
-		'data_type' : 'int',
+		'data_type' : 'text',
 		'not_null' : true
 	}
 	return dic
