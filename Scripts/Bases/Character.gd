@@ -77,3 +77,19 @@ func class_dic():
 		'not_null' : true
 	}
 	return dic
+
+func as_dict():
+	var dict = {}
+	
+	dict['id'] = id
+	dict['name'] = creature_name
+	dict['global_position_x'] = global_position.x
+	dict['global_position_y'] = global_position.y
+	dict['max_life'] = max_life
+	dict['life'] = life
+	dict['max_mana'] = max_mana
+	dict['mana'] = mana
+	dict['level'] = level
+	dict['experience'] = experience
+	
+	return dict

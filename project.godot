@@ -50,8 +50,9 @@ config/icon="res://icon.png"
 
 [autoload]
 
-DBManager="*res://Scripts/DataBaseManager.gd"
-ConnectionManager="*res://Scripts/ConnectionManager.gd"
+GameManager="*res://Scripts/Managers/GameManager.gd"
+DBManager="*res://Scripts/Managers/DataBaseManager.gd"
+ConnectionManager="*res://Scripts/Managers/ConnectionManager.gd"
 
 [physics]
 
