@@ -237,10 +237,5 @@ remote func set_charater_position(character_position : Vector2, character_direct
 		character.global_position = character_position
 #		character._animate(character_direction, character_direction != Vector2.ZERO)
 
-# For a list of player in range of message the player will send the message
-remote func send_message(message : String, gateway_list : Array):
-	for gateway_id in gateway_list:
-		rpc_id(gateway_id, 'receive_message', message)
-
-remote func receive_message(messaage : String):
+remotesync func get_message(message : String):
 	pass
