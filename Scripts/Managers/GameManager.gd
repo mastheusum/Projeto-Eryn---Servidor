@@ -24,10 +24,13 @@ func create_character(character_id : int, gateway_owner : int):
 		ConnectionManager.rpc_id(gateway_owner, 'response_sign_in', character_list)
 
 func destroy_character(gateway_id):
-	print(1)
 	var character = get_node("/root/Game/PlayerList/"+str(gateway_id))
-	print(2)
 	if character:
 		DBManager.update_character(character as Character)
 		character.queue_free()
+		ConnectionManager.rpc('response_sign_out', [gateway_id])
 
+func get_character(gateway_id : int) -> KinematicBody2D:
+	var list = get_node("/root/Game/PlayerList")
+	var character = list.get_node(str(gateway_id))
+	return character

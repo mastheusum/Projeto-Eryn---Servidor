@@ -19,6 +19,10 @@ func calculate_current_level():
 		level += 1
 		gain_experience( -1000 )
 
+func update_status(life : int, mana : int):
+	self.life = life
+	self.mana = mana
+
 # need remake. This will recover a percent of max life over time
 func recover_life():
 	life = max_life

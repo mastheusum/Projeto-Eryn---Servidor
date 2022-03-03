@@ -17,8 +17,8 @@ func _ready():
 func create_tables():
 	db.open_db()
 	
-	db.drop_table("account")
-	db.drop_table("character")
+#	db.drop_table("account")
+#	db.drop_table("character")
 	db.open_db()
 	
 	db.query("CREATE TABLE IF NOT EXISTS account (id INTEGER PRIMARY KEY NOT NULL,username text NOT NULL UNIQUE,password text NOT NULL);")
