@@ -19,13 +19,11 @@ func create_tables():
 	
 #	db.drop_table("account")
 #	db.drop_table("character")
-	db.open_db()
 	
 	db.query("CREATE TABLE IF NOT EXISTS account (id INTEGER PRIMARY KEY NOT NULL,username text NOT NULL UNIQUE,password text NOT NULL);")
-	db.query("CREATE TABLE IF NOT EXISTS character (id INTEGER PRIMARY KEY NOT NULL,name text NOT NULL UNIQUE,global_position_x INTEGER NOT NULL,global_position_y INTEGER NOT NULL,max_life INTEGER NOT NULL,life INTEGER NOT NULL,max_mana INTEGER NOT NULL,mana INTEGER NOT NULL,level INTEGER NOT NULL,experience INTEGER NOT NULL,account_id INTEGER NOT NULL, FOREIGN KEY (account_id) REFERENCES account(id));")
+	db.query("CREATE TABLE IF NOT EXISTS character (id INTEGER PRIMARY KEY NOT NULL,name text NOT NULL UNIQUE,global_position_x INTEGER NOT NULL,global_position_y INTEGER NOT NULL,max_life INTEGER NOT NULL,life INTEGER NOT NULL,max_mana INTEGER NOT NULL,mana INTEGER NOT NULL,level INTEGER NOT NULL,experience INTEGER NOT NULL, skin INTEGER NOT NULL, account_id INTEGER NOT NULL, FOREIGN KEY (account_id) REFERENCES account(id));")
 	
 	db.close_db()
-	pass
 
 func teste_insert():
 	db.open_db()
@@ -72,6 +70,7 @@ func create_character(account_id : int, character : Character) -> String:
 		var colluns : PoolStringArray = [
 			"id",
 			"name",
+			"skin",
 			"global_position_x",
 			"global_position_y",
 			"max_life",
@@ -85,6 +84,7 @@ func create_character(account_id : int, character : Character) -> String:
 		var values : PoolStringArray = [
 			str(id + 1),
 			'"'+character.creature_name+'"',
+			str(character.sprite_index),
 			str(character.global_position.x),
 			str(character.global_position.y),
 			str(character.max_life),
@@ -112,6 +112,7 @@ func read_character(character_id : int) -> Array:
 
 func update_character(character : Character) -> String:
 	var set : PoolStringArray = [
+		"skin = " + str(character.sprite_index),
 		"max_life = " + str(character.max_life),
 		"life = " + str(character.life),
 		"max_mana = " + str(character.max_mana),

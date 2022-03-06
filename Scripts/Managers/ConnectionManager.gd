@@ -41,6 +41,11 @@ remote func request_login(username : String, password : String):
 	
 	var token : String = ""
 	
+	for key in valid_tokens.keys():
+		if valid_tokens[key] == account_id:
+			account_id = -1
+			break
+	
 	if account_id != -1:
 		randomize()
 		var number = randi()
@@ -77,22 +82,23 @@ remote func request_character_list(token : String):
 		
 	rpc_id(gateway_id, 'response_character_list', character_list)
 
-remote func request_create_new_character(token : String, character_name : String):
+remote func request_create_new_character(token : String, character : Dictionary):
 	var gateway_id = get_tree().get_rpc_sender_id()
 	
-	var character = Character.new()
-	character.creature_name = character_name
-	character.global_position = Vector2.ZERO
-	character.max_life = 100
-	character.life = 75
-	character.max_mana = 50
-	character.mana = 25
-	character.level = 1
-	character.experience = 0
+	var new_character = Character.new()
+	new_character.creature_name = character["name"]
+	new_character.sprite_index = character["skin"]
+	new_character.global_position = Vector2.ZERO
+	new_character.max_life = 100
+	new_character.life = 75
+	new_character.max_mana = 50
+	new_character.mana = 25
+	new_character.level = 1
+	new_character.experience = 0
 	
 	var account_id = valid_tokens[token]
 	
-	var err = DBManager.create_character(account_id, character)
+	var err = DBManager.create_character(account_id, new_character)
 	
 	rpc_id(gateway_id, 'response_create_new_character', err)
 

@@ -11,16 +11,19 @@ func send_message(message : String):
 func gain_experience(value : int):
 	experience += value
 	calculate_current_level()
-	pass
 
 # based on character's experience calculates his level
 func calculate_current_level():
-	if experience >= 1000:
-		level += 1
-		gain_experience( -1000 )
+	level = int(experience / 100)
 
 func update_status(life : int, mana : int):
 	self.life = life
+	if life <= 0:
+		global_position = Vector2.ZERO
+		life = max_life
+		mana = max_mana
+		gain_experience( int(experience / 20.0) )
+		GameManager.destroy_character(int(name))
 	self.mana = mana
 
 # need remake. This will recover a percent of max life over time
@@ -75,6 +78,10 @@ func class_dic():
 		'data_type' : 'int',
 		'not_null' : true
 	}
+	dic['skin'] = {
+		'data_type' : 'int',
+		'not_null' : true
+	}
 	dic['account_id'] = {
 		'data_type' : 'int',
 		'foreign_key' : 'account.id',
@@ -87,6 +94,7 @@ func as_dict():
 	
 	dict['id'] = id
 	dict['name'] = creature_name
+	dict['skin'] = sprite_index
 	dict['global_position_x'] = global_position.x
 	dict['global_position_y'] = global_position.y
 	dict['max_life'] = max_life

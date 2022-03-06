@@ -8,6 +8,7 @@ func add_character_from_game(gateway_id : int, character : Dictionary):
 	player.name = str(gateway_id)
 	player.set_network_master(gateway_id)
 	player.id = character['id']
+	player.sprite_index = character['skin']
 	player.creature_name = character['name']
 	player.experience = character['experience']
 	player.global_position = Vector2(character['global_position_x'],character['global_position_y'])
