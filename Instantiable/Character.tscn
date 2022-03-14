@@ -88,3 +88,6 @@ percent_visible = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="AggressorList" type="Timer" parent="."]
+one_shot = true

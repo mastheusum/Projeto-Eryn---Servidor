@@ -8,6 +8,16 @@ var max_mana : int
 var mana : int
 var level : int
 var attack_range : float
+var strength : int # physical damage
+var constitution : int # max life
+var dexterity : int # physical critical hit
+var agility : int # attack speed
+var intelligence : int # max mana
+var willpower : int # resistance to crowd controls
+var perception : int # magic critical hit
+var wisdom : int # magic damage 
+
+var aggressor_list : Array = []
 
 func _ready():
 	$HUD/CharacterName.text = creature_name
@@ -15,14 +25,14 @@ func _ready():
 	$HUD/LifeBar.value = life
 	$HUD/ManaBar.max_value = max_mana
 	$HUD/ManaBar.value = mana
+	
+	(get_node('AggressorList') as Timer).connect('timeout', self, 'aggressor_timeout')
 
-func receive_damage(value : int):
-	if life <= 0:
-		_on_dead()
-	pass
+func set_aggressor(id : int):
+	print(aggressor_list)
+	if not aggressor_list.has(id):
+		aggressor_list.append(id)
+		get_node('AggressorList').start(10)
 
-func attack(target_id : int, max_range : float, power : int):
-	pass
-
-func _on_dead():
-	pass
+func aggressor_timeout():
+	aggressor_list = []

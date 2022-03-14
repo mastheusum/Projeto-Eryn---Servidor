@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Scripts/Scenes/Lobby.gd" type="Script" id=1]
-[ext_resource path="res://Scripts/ButtonTesteDB.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/DB Comannds.gd" type="Script" id=3]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.172549, 0.164706, 0.196078, 0.815686 )
@@ -143,27 +143,24 @@ margin_right = 192.0
 margin_bottom = 166.0
 text = "Shutdown Server"
 
-[node name="ResultTesteDB" type="Label" parent="CanvasLayer"]
-visible = false
-margin_left = 56.0
-margin_top = 392.0
-margin_right = 984.0
-margin_bottom = 504.0
+[node name="DB Comannds" type="Control" parent="CanvasLayer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ButtonTesteDB" type="Button" parent="CanvasLayer"]
+[node name="SEED Itens" type="Button" parent="CanvasLayer/DB Comannds"]
 margin_left = 464.0
 margin_top = 536.0
 margin_right = 560.0
 margin_bottom = 576.0
-text = "TESTE DB"
-script = ExtResource( 2 )
+text = "Seed Itens"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [connection signal="pressed" from="CanvasLayer/Start Server/StartServerBtn" to="." method="_on_StartServerBtn_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control Server/ShutdownServerBtn" to="." method="_on_ShutdownServerBtn_pressed"]
-[connection signal="pressed" from="CanvasLayer/ButtonTesteDB" to="." method="_on_ButtonTesteDB_pressed"]
+[connection signal="pressed" from="CanvasLayer/DB Comannds/SEED Itens" to="CanvasLayer/DB Comannds" method="_on_SEED_Itens_pressed"]

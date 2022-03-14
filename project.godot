@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scripts/Bases/Creature.gd"
 }, {
+"base": "TextureRect",
+"class": "Item",
+"language": "GDScript",
+"path": "res://Scripts/Bases/Item.gd"
+}, {
 "base": "Creature",
 "class": "NoPlayableCharacter",
 "language": "GDScript",
@@ -38,6 +43,7 @@ _global_script_class_icons={
 "Account": "",
 "Character": "",
 "Creature": "",
+"Item": "",
 "NoPlayableCharacter": "",
 "PlayableCharacter": ""
 }

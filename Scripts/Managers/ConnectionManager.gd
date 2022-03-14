@@ -1,6 +1,6 @@
 extends Node2D
 
-var player_instance = preload("res://Instantiable/PlayerInstance.tscn")
+var player_instance = preload("res://Instantiable/Character.tscn")
 var game_scene = preload("res://Scene/Game.tscn")
 
 var peer = null
@@ -32,6 +32,10 @@ func _on_peer_connected(gateway_id):
 func _on_peer_disconnected(gateway_id):
 	print("<< " + str(gateway_id) )
 	GameManager.destroy_character(gateway_id)
+	for key in valid_tokens.keys():
+		if valid_tokens[key]['gateway_id'] == gateway_id:
+			valid_tokens.erase(key)
+			break
 	pass
 
 # REQUESTS
@@ -42,7 +46,7 @@ remote func request_login(username : String, password : String):
 	var token : String = ""
 	
 	for key in valid_tokens.keys():
-		if valid_tokens[key] == account_id:
+		if valid_tokens[key]['account_id'] == account_id:
 			account_id = -1
 			break
 	
@@ -52,7 +56,10 @@ remote func request_login(username : String, password : String):
 		var timestamp = OS.get_unix_time()
 		token = str(number).sha256_text() + str(timestamp)
 		
-		valid_tokens[token] = account_id
+		valid_tokens[token] = { 
+			'account_id' : account_id, 
+			'gateway_id' : gateway_id 
+			}
 	rpc_id(gateway_id, 'response_login', account_id, token)
 
 remote func request_logout(token : String):
@@ -77,30 +84,40 @@ remote func request_character_list(token : String):
 	
 	if valid_tokens.has(token):
 		character_list = DBManager.get_account_characters(
-			valid_tokens[token]
+			valid_tokens[token]['account_id']
 		)
 		
 	rpc_id(gateway_id, 'response_character_list', character_list)
 
 remote func request_create_new_character(token : String, character : Dictionary):
-	var gateway_id = get_tree().get_rpc_sender_id()
-	
-	var new_character = Character.new()
-	new_character.creature_name = character["name"]
-	new_character.sprite_index = character["skin"]
-	new_character.global_position = Vector2.ZERO
-	new_character.max_life = 100
-	new_character.life = 75
-	new_character.max_mana = 50
-	new_character.mana = 25
-	new_character.level = 1
-	new_character.experience = 0
-	
-	var account_id = valid_tokens[token]
-	
-	var err = DBManager.create_character(account_id, new_character)
-	
-	rpc_id(gateway_id, 'response_create_new_character', err)
+	if valid_tokens.has(token):
+		var gateway_id = get_tree().get_rpc_sender_id()
+		
+		var new_character = Character.new()
+		new_character.creature_name = character["name"]
+		new_character.sprite_index = character["skin"]
+		new_character.job = character['job']
+		new_character.global_position = Vector2.ZERO
+		new_character.level = 1
+		new_character.attribute_points = 5
+		new_character.strength = 5
+		new_character.constitution = 5
+		new_character.dexterity = 5
+		new_character.agility = 5
+		new_character.intelligence = 5
+		new_character.willpower = 5
+		new_character.perception = 5
+		new_character.wisdom = 5
+		new_character.max_life = 5 * new_character.constitution
+		new_character.life = int(new_character.max_life * 0.8)
+		new_character.max_mana = 5 * new_character.intelligence
+		new_character.mana = int(new_character.max_mana * 0.8)
+		
+		var account_id = valid_tokens[token]['account_id']
+		
+		var err = DBManager.create_character(account_id, new_character)
+		
+		rpc_id(gateway_id, 'response_create_new_character', err)
 
 remote func request_sign_in_character(token : String, character_id : int):
 	var gateway_id = get_tree().get_rpc_sender_id()
@@ -156,8 +173,19 @@ remotesync func get_status_alert(message : String, type : int):
 remote func attack_character(power : int, type : int):
 	pass
 
-# ussed to update CharacterProxyes's life and mana 
-remote func update_status(gateway_id : int, life : int, mana : int):
-	if gateway_id != get_tree().get_network_unique_id() and gateway_id != 1:
-		GameManager.get_character(gateway_id).update_status(life, mana)
+remote func set_aggressor_list(aggressor_id : int):
+	var gateway_id = get_tree().get_rpc_sender_id()
+	(GameManager.get_character(gateway_id) as Character).set_aggressor(aggressor_id)
 
+# ussed to update CharacterProxyes's life and mana 
+remote func update_status(gateway_id : int, status : String, value : int):
+	if gateway_id != 1:
+		(GameManager.get_character(gateway_id) as Character).set_attribute(status, value)
+
+remote func set_character_equipment(equipment : String, item : Dictionary):
+	var gateway_id = get_tree().get_rpc_sender_id()
+	(GameManager.get_character(gateway_id) as Character).set_equipment(equipment, item)
+
+remote func set_character_inventory(equipment_list : Array):
+	var gateway_id = get_tree().get_rpc_sender_id()
+	(GameManager.get_character(gateway_id) as Character).set_inventory(equipment_list)
