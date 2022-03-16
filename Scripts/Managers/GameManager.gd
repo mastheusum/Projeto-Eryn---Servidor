@@ -26,7 +26,7 @@ func create_character(character_id : int, gateway_owner : int):
 func destroy_character(gateway_id):
 	var character = get_node("/root/Game/PlayerList/"+str(gateway_id))
 	if character:
-		DBManager.update_character(character as Character)
+		yield(DBManager.update_character(character as Character), 'completed')
 		character.queue_free()
 		ConnectionManager.rpc('response_sign_out', [gateway_id])
 

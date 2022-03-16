@@ -14,7 +14,7 @@ var experience : int
 var attribute_points : int # to distribute among attributes when leveling up
 var job : int # Type ENUM Jobs
 
-var inventory = []
+var inventory : Array = []
 
 var _helmet : Item = null
 var _armor : Item = null
@@ -28,6 +28,9 @@ var _ring2 : Item = null
 class Slot:
 	var item : Item
 	var amount : int
+
+func _ready():
+	print(inventory)
 
 func set_attribute(attribute : String, value : int):
 	var status_accessor : PoolStringArray = [
@@ -104,19 +107,6 @@ func calculate_current_level():
 		ConnectionManager.rpc_id(int(name), 'update_status', int(name), 'attribute_points', attribute_points)
 		ConnectionManager.rpc('update_status', int(name), 'level', level)
 
-func add_item(item : Item, amount : int):
-	var add = false
-	for slot in inventory:
-		if slot.item.id == item.id:
-			slot.amount += amount
-			add = true
-			break
-	if not add:
-		var slot = Slot.new()
-		slot.item.id = item.id
-		slot.amount = amount
-		inventory.append( slot )
-
 func as_dict():
 	var dict = {}
 	
@@ -152,8 +142,8 @@ func as_dict():
 	return dict
 
 func set_equipment(equipment_name : String, item_info : Dictionary):
+	print('**',equipment_name, '\n', Item.new().dict_to(item_info))
 	set(equipment_name, Item.new().dict_to(item_info))
 
 func set_inventory(item_list : Array):
 	inventory = item_list
-	print(inventory)

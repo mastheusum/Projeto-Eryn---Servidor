@@ -34,6 +34,7 @@ func add_character_from_game(gateway_id : int, character : Dictionary):
 	player._weapon2 = Item.new().dict_to(character['weapon2'])
 	player._ring1 = Item.new().dict_to(character['ring1'])
 	player._ring2 = Item.new().dict_to(character['ring2'])
+	print('>>',player.inventory, '\n>>',character['inventory'])
 	player.inventory = character['inventory']
 	
 	$PlayerList.call_deferred( 'add_child', player )

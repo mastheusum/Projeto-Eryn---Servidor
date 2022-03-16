@@ -266,7 +266,7 @@ func read_character(character_id : int) -> Array:
 	
 	return character
 
-func update_character(character : Character) -> String:
+func update_character(character : Character):
 	var set : PoolStringArray = [
 		"skin = " + str(character.sprite_index),
 		"life = " + str(character.life),
@@ -285,15 +285,24 @@ func update_character(character : Character) -> String:
 		"job = " + str(character.job),
 		"global_position_x = " + str(character.global_position.x),
 		"global_position_y = " + str(character.global_position.y),
-		"weapon1 = " + str(-1 if character._weapon1 else character._weapon1.id),
-		"weapon2 = " + str(-1 if character._weapon2 else character._weapon2.id),
-		"ring1 = " + str(-1 if character._ring1 else character._ring1.id),
-		"ring2 = " + str(-1 if character._ring2 else character._ring2.id),
-		"helmet = " + str(-1 if character._helmet else character._helmet.id),
-		"armor = " + str(-1 if character._armor else character._armor.id),
-		"legs = " + str(-1 if character._legs else character._legs.id),
-		"boots = " + str(-1 if character._boots else character._boots.id)
+		"weapon1 = " + str(-1 if not character._weapon1 else character._weapon1.id),
+		"weapon2 = " + str(-1 if not character._weapon2 else character._weapon2.id),
+		"ring1 = " + str(-1 if not character._ring1 else character._ring1.id),
+		"ring2 = " + str(-1 if not character._ring2 else character._ring2.id),
+		"helmet = " + str(-1 if not character._helmet else character._helmet.id),
+		"armor = " + str(-1 if not character._armor else character._armor.id),
+		"legs = " + str(-1 if not character._legs else character._legs.id),
+		"boots = " + str(-1 if not character._boots else character._boots.id)
 	]
+	var inventory_size = character.inventory.size()
+	var insertion = ""
+	print('**',character.inventory)
+	for i in range(inventory_size):
+		var slot = character.inventory[i]
+		insertion += "("+str(character.id)+','+str(slot['id'])+','+str(slot['amount']) + ")"
+		if i + 1 < inventory_size:
+			insertion += ","
+	
 	var err : String = ""
 	
 	db.open_db()
@@ -304,11 +313,10 @@ func update_character(character : Character) -> String:
 	db.query('DELETE FROM inventory WHERE character_id = "'+str(character.id)+'";')
 	err += " " + db.error_message
 	
-	for slot in character.inventory:
-		db.query('INSERT INTO inventory(character_id, item_id, amount) VALUES ('+str(character.id)+','+str(slot.item.id)+','+str(slot.amount)+');')
-		err += " " + db.error_message
+	db.query('INSERT INTO inventory(character_id, item_id, amount) VALUES '+insertion+';')
+	err += " " + db.error_message
 	db.close_db()
-	return err
+#	return err
 
 func create_account(account : Account):
 	db.open_db()

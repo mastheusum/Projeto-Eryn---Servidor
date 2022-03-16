@@ -188,4 +188,5 @@ remote func set_character_equipment(equipment : String, item : Dictionary):
 
 remote func set_character_inventory(equipment_list : Array):
 	var gateway_id = get_tree().get_rpc_sender_id()
+#	print("**"+ str(equipment_list))
 	(GameManager.get_character(gateway_id) as Character).set_inventory(equipment_list)
