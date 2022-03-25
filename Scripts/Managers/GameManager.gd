@@ -19,18 +19,23 @@ func create_character(character_id : int, gateway_owner : int):
 		for child in get_node('/root/Game/PlayerList').get_children():
 			if child.name != str(gateway_owner):
 				character_list[child.name] = (child as Character).as_dict()
-				print(character_list[child.name])
 		ConnectionManager.rpc('response_sign_in', { str(gateway_owner) : character_info[0] })
 		ConnectionManager.rpc_id(gateway_owner, 'response_sign_in', character_list)
 
 func destroy_character(gateway_id):
 	var character = get_node("/root/Game/PlayerList/"+str(gateway_id))
 	if character:
-		yield(DBManager.update_character(character as Character), 'completed')
+		DBManager.update_character((character as Character).as_dict())
 		character.queue_free()
 		ConnectionManager.rpc('response_sign_out', [gateway_id])
+	print('++', get_node('/root/Game/PlayerList').get_children() as String)
 
 func get_character(gateway_id : int) -> KinematicBody2D:
 	var list = get_node("/root/Game/PlayerList")
 	var character = list.get_node(str(gateway_id))
 	return character
+
+func get_monster(monster_id : String):
+	var list = get_node("/root/Game/MonsterList")
+	var monster = (list.get_node(monster_id) as MonsterAreaLimit).get_monster()
+	return monster

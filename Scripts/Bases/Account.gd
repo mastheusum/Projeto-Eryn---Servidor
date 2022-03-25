@@ -23,3 +23,18 @@ func class_dic():
 		'not_null' : true
 	}
 	return dic
+
+func to_dict():
+	var dict : Dictionary = {}
+	dict['id'] = account_id
+	dict['username'] = username
+	dict['password'] = password
+	return dict
+
+func set_from_dict(dict : Dictionary):
+	
+	account_id = dict['id']
+	username = dict['username']
+	password = dict['password']
+	
+	return self

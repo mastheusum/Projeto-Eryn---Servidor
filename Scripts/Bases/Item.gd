@@ -11,15 +11,15 @@ enum Types {
 	RING
 }
 
-var id : int
-var item_name : String
-var texture_path : String
-var type : int
-var attack : int
-var attack_range : int
-var defense : int
-var critical : int
-var two_handed : int
+var id : int = 0
+var item_name : String = ''
+var texture_path : String = ''
+var type : int = Types.ARMOR
+var attack : int = 0
+var attack_range : int = 0
+var defense : int = 0
+var critical : int = 0
+var two_handed : int = 0
 
 func as_dict():
 	var dict = {}
@@ -36,7 +36,7 @@ func as_dict():
 	
 	return dict
 
-func dict_to(dict : Dictionary):
+func set_from_dict(dict : Dictionary):
 	if not dict.empty():
 		id = dict['id']
 		item_name = dict['item_name']
@@ -48,6 +48,4 @@ func dict_to(dict : Dictionary):
 		critical = dict['critical']
 		two_handed = dict['two_handed']
 		
-		return self
-	else:
-		return null
+	return self

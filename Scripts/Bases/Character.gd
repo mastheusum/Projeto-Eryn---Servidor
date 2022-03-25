@@ -16,21 +16,21 @@ var job : int # Type ENUM Jobs
 
 var inventory : Array = []
 
-var _helmet : Item = null
-var _armor : Item = null
-var _legs : Item = null
-var _boots : Item = null
-var _weapon1 : Item = null
-var _weapon2 : Item = null
-var _ring1 : Item = null
-var _ring2 : Item = null
+var _helmet : Item = Item.new()
+var _armor : Item = Item.new()
+var _legs : Item = Item.new()
+var _boots : Item = Item.new()
+var _weapon1 : Item = Item.new()
+var _weapon2 : Item = Item.new()
+var _ring1 : Item = Item.new()
+var _ring2 : Item = Item.new()
 
 class Slot:
 	var item : Item
 	var amount : int
 
 func _ready():
-	print(inventory)
+	pass
 
 func set_attribute(attribute : String, value : int):
 	var status_accessor : PoolStringArray = [
@@ -49,6 +49,7 @@ func set_attribute(attribute : String, value : int):
 	]
 	if attribute in status_accessor:
 		if attribute == 'life':
+			life = value
 			if life <= 0:
 				global_position = Vector2.ZERO
 				life = max_life
@@ -56,7 +57,9 @@ func set_attribute(attribute : String, value : int):
 				for gateway in aggressor_list:
 					GameManager.get_character(gateway).gain_experience( level * 10 )
 				GameManager.destroy_character(int(name))
-	if attribute_points > 0 and attribute in attribute_accessor:
+		elif attribute == 'mana':
+			mana = value
+	elif attribute_points > 0 and attribute in attribute_accessor:
 		attribute_points -= 1
 		var val : int = 0
 		match attribute:
@@ -113,8 +116,8 @@ func as_dict():
 	dict['id'] = id
 	dict['name'] = creature_name
 	dict['skin'] = sprite_index
-	dict['global_position_x'] = global_position.x
-	dict['global_position_y'] = global_position.y
+	dict['global_position_x'] = int(global_position.x)
+	dict['global_position_y'] = int(global_position.y)
 	dict['life'] = life
 	dict['mana'] = mana
 	dict['level'] = level
@@ -129,7 +132,7 @@ func as_dict():
 	dict['job'] = job
 	dict['experience'] = experience
 	dict['attribute_points'] = attribute_points
-	dict['inventory'] = inventory
+	dict['inventory'] = inventory.duplicate()
 	dict['helmet'] = _helmet.id if _helmet else -1
 	dict['armor'] = _armor.id if _armor else -1
 	dict['legs'] = _legs.id if _legs else -1
@@ -141,9 +144,67 @@ func as_dict():
 	
 	return dict
 
+func proxy_as_dict():
+	var dict = {}
+	
+	dict['id'] = id
+	dict['name'] = creature_name
+	dict['skin'] = sprite_index
+	dict['global_position_x'] = global_position.x
+	dict['global_position_y'] = global_position.y
+	dict['life'] = life
+	dict['mana'] = mana
+	dict['level'] = level
+	dict['constitution'] = constitution
+	dict['intelligence'] = intelligence
+	dict['job'] = job
+	
+	return dict
+
+func set_from_dict(dict : Dictionary):
+	id = dict['id']
+	creature_name = dict['name']
+	sprite_index = dict['skin']
+	global_position.x = dict['global_position_x']
+	global_position.y = dict['global_position_y']
+	level = dict['level']
+	experience = dict['experience'] 
+	
+	job = dict['job'] 
+	
+	attribute_points = dict['attribute_points'] 
+	strength = dict['strength']
+	constitution = dict['constitution'] 
+	dexterity = dict['dexterity'] 
+	agility = dict['agility'] 
+	intelligence = dict['intelligence'] 
+	willpower = dict['willpower'] 
+	perception = dict['perception'] 
+	wisdom = dict['wisdom']
+	
+	set_max_life()
+	set_max_mana()
+	life = dict['life']
+	mana = dict['mana']
+	
+	inventory = dict['inventory'].duplicate()
+	
+	_helmet = _helmet.set_from_dict( dict['helmet'] )
+	_armor = _armor.set_from_dict( dict['armor'] )
+	_legs = _legs.set_from_dict( dict['legs'] )
+	_boots = _boots.set_from_dict( dict['boots'] )
+	_weapon1 = _weapon1.set_from_dict( dict['weapon1'] )
+	_weapon2 =  _weapon2.set_from_dict( dict['weapon2'] )
+	_ring1 = _ring1.set_from_dict( dict['ring1'] ) 
+	_ring2 = _ring2.set_from_dict( dict['ring2'] )
+	
+	return self
+
 func set_equipment(equipment_name : String, item_info : Dictionary):
-	print('**',equipment_name, '\n', Item.new().dict_to(item_info))
-	set(equipment_name, Item.new().dict_to(item_info))
+	print('** ', equipment_name, '>>', item_info)
+	if not item_info.empty():
+		var item : Item = self[equipment_name] as Item
+		item = item.set_from_dict(item_info)
 
 func set_inventory(item_list : Array):
 	inventory = item_list

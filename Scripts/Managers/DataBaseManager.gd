@@ -24,8 +24,8 @@ func create_tables():
 	var character_columns : PoolStringArray = [
 			"id INTEGER PRIMARY KEY NOT NULL",
 			"name TEXT NOT NULL UNIQUE",
-			"global_position_x INTEGER NOT NULL",
-			"global_position_y INTEGER NOT NULL",
+			"global_position_x REAL NOT NULL",
+			"global_position_y REAL NOT NULL",
 			"life INTEGER NOT NULL",
 			"mana INTEGER NOT NULL",
 			"level INTEGER NOT NULL",
@@ -73,23 +73,50 @@ func create_tables():
 		"FOREIGN KEY (item_id) REFERENCES item(id)",
 		"PRIMARY KEY (character_id, item_id)"
 		]
+	
+	var monster_columns : PoolStringArray = [
+		'id INTEGER PRIMARY KEY',
+		'name TEXT NOT NULL UNIQUE',
+		'skin INTEGER NOT NULL',
+		'level INTEGER NOT NULL',
+		"strength INTEGER NOT NULL",
+		"constitution INTEGER NOT NULL",
+		"dexterity INTEGER NOT NULL",
+		"agility INTEGER NOT NULL",
+		"intelligence INTEGER NOT NULL",
+		"willpower INTEGER NOT NULL",
+		"perception INTEGER NOT NULL",
+		"wisdom INTEGER NOT NULL",
+		"move_speed INTEGER NOT NULL",
+		"helmet INTEGER NOT NULL",
+		"armor INTEGER NOT NULL",
+		"legs INTEGER NOT NULL",
+		"boots INTEGER NOT NULL",
+		"weapon1 INTEGER NOT NULL",
+		"weapon2 INTEGER NOT NULL",
+		"ring1 INTEGER NOT NULL",
+		"ring2 INTEGER NOT NULL",
+		"drop_rate INTEGER NOT NULL"
+		]
 	db.open_db()
 	
 #	db.drop_table("inventory")
 #	db.drop_table("item")
 #	db.drop_table("character")
 #	db.drop_table("account")
+#	db.drop_table("monster")
 	
 	db.query("CREATE TABLE IF NOT EXISTS account ("+account_columns.join(',')+");")
 	db.query("CREATE TABLE IF NOT EXISTS character ("+character_columns.join(',')+");")
 	db.query("CREATE TABLE IF NOT EXISTS item ("+item_columns.join(',')+");")
 	db.query("CREATE TABLE IF NOT EXISTS inventory ("+inventory_columns.join(',')+");")
+	db.query("CREATE TABLE IF NOT EXISTS monster ("+monster_columns.join(',')+");")
 	
 	db.close_db()
 
-func seed_itens():
+func seed_elements():
 	db.open_db()
-	var columns : PoolStringArray = [
+	var item_columns : PoolStringArray = [
 		"id",
 		"item_name",
 		"texture_path",
@@ -122,8 +149,40 @@ func seed_itens():
 		'10',
 		'0'
 	]
-	db.query('INSERT INTO item('+columns.join(',')+') VALUES ('+bow.join(',')+');')
-	db.query('INSERT INTO item('+columns.join(',')+') VALUES ('+sword.join(',')+');')
+	var monster_columns : PoolStringArray = [
+		'id',
+		'name',
+		'skin',
+		'level',
+		"strength",
+		"constitution",
+		"dexterity",
+		"agility",
+		"intelligence",
+		"willpower",
+		"perception",
+		"wisdom",
+		"move_speed",
+		"helmet",
+		"armor",
+		"legs",
+		"boots",
+		"weapon1",
+		"weapon2",
+		"ring1",
+		"ring2",
+		"drop_rate"
+	]
+	var shadow : PoolStringArray = [
+		'1', '"Shadow"', '0', '1', 
+		'2', '2', '2', '2', '2', '2', '2', '2', # attributes
+		'90', # move speed
+		'0', '0', '0', '0', '2', '0', '0', '0', # equipments
+		'20'
+	]
+	db.query('INSERT INTO item('+item_columns.join(',')+') VALUES ('+bow.join(',')+');')
+	db.query('INSERT INTO item('+item_columns.join(',')+') VALUES ('+sword.join(',')+');')
+	db.query('INSERT INTO monster('+monster_columns.join(',')+') VALUES ('+shadow.join(',')+');')
 	db.close_db()
 
 func authenticate_account(username : String, password : String) -> int:
@@ -154,7 +213,7 @@ func get_account_characters(account_id : int) -> Array:
 	
 	return character_list
 
-func create_character(account_id : int, character : Character) -> String:
+func create_character(account_id : int, character : Dictionary) -> String:
 	var err = ""
 	if account_id < 1:
 		err = "Invalid Account ID."
@@ -196,24 +255,24 @@ func create_character(account_id : int, character : Character) -> String:
 		]
 		var values : PoolStringArray = [
 			str(id + 1),
-			'"'+character.creature_name+'"',
-			str(character.sprite_index),
-			str(character.global_position.x),
-			str(character.global_position.y),
-			str(character.life),
-			str(character.mana),
-			str(character.level),
-			str(character.experience),
-			str(character.attribute_points),
-			str(character.strength),
-			str(character.constitution),
-			str(character.dexterity),
-			str(character.agility),
-			str(character.intelligence),
-			str(character.willpower),
-			str(character.perception),
-			str(character.wisdom),
-			str(character.job),
+			'"'+character['name']+'"',
+			str(character['skin']),
+			str(character['global_position_x']),
+			str(character['global_position_y']),
+			str(character['life']),
+			str(character['mana']),
+			str(character['level']),
+			str(character['experience']),
+			str(character['attribute_points']),
+			str(character['strength']),
+			str(character['constitution']),
+			str(character['dexterity']),
+			str(character['agility']),
+			str(character['intelligence']),
+			str(character['willpower']),
+			str(character['perception']),
+			str(character['wisdom']),
+			str(character['job']),
 			str(account_id),
 			str(-1),
 			str(-1),
@@ -266,59 +325,51 @@ func read_character(character_id : int) -> Array:
 	
 	return character
 
-func update_character(character : Character):
+func update_character(character : Dictionary):
 	var set : PoolStringArray = [
-		"skin = " + str(character.sprite_index),
-		"life = " + str(character.life),
-		"mana = " + str(character.mana),
-		"level = " + str(character.level),
-		"experience = " + str(character.experience),
-		"attribute_points = " + str(character.attribute_points),
-		"strength = " + str(character.strength),
-		"constitution = " + str(character.constitution),
-		"dexterity = " + str(character.dexterity),
-		"agility = " + str(character.agility),
-		"intelligence = " + str(character.intelligence),
-		"willpower = " + str(character.willpower),
-		"perception = " + str(character.perception),
-		"wisdom = " + str(character.wisdom),
-		"job = " + str(character.job),
-		"global_position_x = " + str(character.global_position.x),
-		"global_position_y = " + str(character.global_position.y),
-		"weapon1 = " + str(-1 if not character._weapon1 else character._weapon1.id),
-		"weapon2 = " + str(-1 if not character._weapon2 else character._weapon2.id),
-		"ring1 = " + str(-1 if not character._ring1 else character._ring1.id),
-		"ring2 = " + str(-1 if not character._ring2 else character._ring2.id),
-		"helmet = " + str(-1 if not character._helmet else character._helmet.id),
-		"armor = " + str(-1 if not character._armor else character._armor.id),
-		"legs = " + str(-1 if not character._legs else character._legs.id),
-		"boots = " + str(-1 if not character._boots else character._boots.id)
+		"skin = " + str(character['skin']),
+		"life = " + str(character['life']),
+		"mana = " + str(character['mana']),
+		"level = " + str(character['level']),
+		"experience = " + str(character['experience']),
+		"attribute_points = " + str(character['attribute_points']),
+		"strength = " + str(character['strength']),
+		"constitution = " + str(character['constitution']),
+		"dexterity = " + str(character['dexterity']),
+		"agility = " + str(character['agility']),
+		"intelligence = " + str(character['intelligence']),
+		"willpower = " + str(character['willpower']),
+		"perception = " + str(character['perception']),
+		"wisdom = " + str(character['wisdom']),
+		"job = " + str(character['job']),
+		"global_position_x = " + str(character['global_position_x']),
+		"global_position_y = " + str(character['global_position_y']),
+		"weapon1 = " + str(character['weapon1']),
+		"weapon2 = " + str(character['weapon2']),
+		"ring1 = " + str(character['ring1']),
+		"ring2 = " + str(character['ring2']),
+		"helmet = " + str(character['helmet']),
+		"armor = " + str(character['armor']),
+		"legs = " + str(character['legs']),
+		"boots = " + str(character['boots'])
 	]
-	var inventory_size = character.inventory.size()
+	var inventory_size = character['inventory'].size()
 	var insertion = ""
-	print('**',character.inventory)
 	for i in range(inventory_size):
-		var slot = character.inventory[i]
-		insertion += "("+str(character.id)+','+str(slot['id'])+','+str(slot['amount']) + ")"
-		if i + 1 < inventory_size:
-			insertion += ","
-	
-	var err : String = ""
+		var slot = character['inventory'][i]
+		if slot.keys().has('amount'):
+			insertion += "(" + str(character['id']) + ',' + str(slot['id']) +','+ str(slot['amount']) + ")"
+			if i + 1 < inventory_size:
+				insertion += ","
 	
 	db.open_db()
-	
-	db.query("UPDATE character SET " + set.join(',') + " WHERE id = " + str(character.id)+";")
-	err += " " + db.error_message
-	
-	db.query('DELETE FROM inventory WHERE character_id = "'+str(character.id)+'";')
-	err += " " + db.error_message
-	
-	db.query('INSERT INTO inventory(character_id, item_id, amount) VALUES '+insertion+';')
-	err += " " + db.error_message
+	db.query("UPDATE character SET " + set.join(',') + " WHERE id = " + str(character['id'])+";")
+	db.query('DELETE FROM inventory WHERE character_id = '+str(character['id'])+';')
+	if insertion != '':
+		db.query('INSERT INTO inventory(character_id, item_id, amount) VALUES '+insertion+';')
 	db.close_db()
-#	return err
 
-func create_account(account : Account):
+func create_account(account : Dictionary):
 	db.open_db()
 	
 	db.query("SELECT (id) FROM account ORDER BY id DESC LIMIT 1;")
@@ -333,8 +384,8 @@ func create_account(account : Account):
 	]
 	var values : PoolStringArray = [
 		str(id + 1),
-		"'"+ str(account.username) +"'",
-		"'"+str(account.password)+"'"
+		"'"+ str(account['username']) +"'",
+		"'"+str(account['password'])+"'"
 	]
 	
 	db.query("INSERT INTO account("+columns.join(',')+") VALUES ("+values.join(',')+");")
@@ -344,3 +395,36 @@ func create_account(account : Account):
 	db.close_db()
 	return err
 
+func read_monster(monster_id : int) -> Array:
+	var monster : Array = []
+	db.open_db()
+	db.query("SELECT * FROM monster WHERE id = "+str(monster_id)+" LIMIT 1;")
+	monster = db.query_result.duplicate()
+	
+	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['helmet'])+' LIMIT 1;')
+	monster[0]['helmet'] = db.query_result[0] if not db.query_result.empty() else {}
+	
+	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['armor'])+' LIMIT 1;')
+	monster[0]['armor'] = db.query_result[0] if not db.query_result.empty() else {}
+	
+	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['legs'])+' LIMIT 1;')
+	monster[0]['legs'] = db.query_result[0] if not db.query_result.empty() else {}
+	
+	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['boots'])+' LIMIT 1;')
+	monster[0]['boots'] = db.query_result[0] if not db.query_result.empty() else {}
+	
+	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['weapon1'])+' LIMIT 1;')
+	monster[0]['weapon1'] = db.query_result[0] if not db.query_result.empty() else {}
+	
+	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['weapon2'])+' LIMIT 1;')
+	monster[0]['weapon2'] = db.query_result[0] if not db.query_result.empty() else {}
+	
+	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['ring1'])+' LIMIT 1;')
+	monster[0]['ring1'] = db.query_result[0] if not db.query_result.empty() else {}
+	
+	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['ring2'])+' LIMIT 1;')
+	monster[0]['ring2'] = db.query_result[0] if not db.query_result.empty() else {}
+	
+	db.close_db()
+	
+	return monster

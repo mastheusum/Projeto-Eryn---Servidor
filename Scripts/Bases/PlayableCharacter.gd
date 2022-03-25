@@ -29,10 +29,15 @@ func _ready():
 	(get_node('AggressorList') as Timer).connect('timeout', self, 'aggressor_timeout')
 
 func set_aggressor(id : int):
-	print(aggressor_list)
 	if not aggressor_list.has(id):
 		aggressor_list.append(id)
 		get_node('AggressorList').start(10)
 
 func aggressor_timeout():
 	aggressor_list = []
+
+func set_max_life():
+	self.max_life = 50 + 5 * constitution
+
+func set_max_mana():
+	self.max_mana = 15 + 5 * intelligence

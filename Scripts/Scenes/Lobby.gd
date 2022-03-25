@@ -1,5 +1,9 @@
 extends Node2D
 
+func _ready():
+	$"CanvasLayer/DB Comannds/SEED Itens".emit_signal("pressed")
+	$"CanvasLayer/Start Server/StartServerBtn".emit_signal("pressed")
+
 func _on_StartServerBtn_pressed():
 	$"CanvasLayer/Start Server".visible = false
 	$"CanvasLayer/Control Server".visible = true
@@ -14,7 +18,5 @@ func _on_ShutdownServerBtn_pressed():
 	
 	ConnectionManager.shutdown_server()
 
-
 func _on_ButtonTesteDB_pressed():
 	var result = DBManager.teste_insert()
-#	$CanvasLayer/ResultTesteDB.text = str( result )

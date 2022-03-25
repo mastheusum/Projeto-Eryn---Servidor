@@ -29,6 +29,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scripts/Bases/Item.gd"
 }, {
+"base": "PlayableCharacter",
+"class": "Monster",
+"language": "GDScript",
+"path": "res://Scripts/Bases/Monster.gd"
+}, {
+"base": "Area2D",
+"class": "MonsterAreaLimit",
+"language": "GDScript",
+"path": "res://Scripts/Mechanics/MonsterAreaLimit.gd"
+}, {
 "base": "Creature",
 "class": "NoPlayableCharacter",
 "language": "GDScript",
@@ -44,6 +54,8 @@ _global_script_class_icons={
 "Character": "",
 "Creature": "",
 "Item": "",
+"Monster": "",
+"MonsterAreaLimit": "",
 "NoPlayableCharacter": "",
 "PlayableCharacter": ""
 }

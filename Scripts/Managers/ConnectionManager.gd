@@ -74,7 +74,7 @@ remote func request_new_account(username : String, password : String ):
 	account.username = username
 	account.password = password
 	
-	var err = DBManager.create_account(account)
+	var err = DBManager.create_account(account.to_dict())
 	print(err)
 	rpc_id(gateway_id, 'response_new_account', err)
 
@@ -115,7 +115,7 @@ remote func request_create_new_character(token : String, character : Dictionary)
 		
 		var account_id = valid_tokens[token]['account_id']
 		
-		var err = DBManager.create_character(account_id, new_character)
+		var err = DBManager.create_character(account_id, new_character.as_dict())
 		
 		rpc_id(gateway_id, 'response_create_new_character', err)
 
@@ -128,6 +128,7 @@ remote func request_sign_out_character(token : String):
 	var gateway_id = get_tree().get_rpc_sender_id()
 	if valid_tokens.has(token):
 		GameManager.destroy_character(gateway_id)
+		
 
 # RESPONSES
 remote func response_login(account_id : int, token : String):
@@ -159,14 +160,13 @@ remote func set_charater_position(character_position : Vector2, character_direct
 	var character = get_node('/root/Game/PlayerList').get_node( str(gateway_id) )
 	if character:
 		character.global_position = character_position
-#		character._animate(character_direction, character_direction != Vector2.ZERO)
 
 remotesync func get_message(message : String):
 	pass
 
 # This function is called when player receive a damage
 # then this damage is send to al another players connecteds
-remotesync func get_status_alert(message : String, type : int):
+remotesync func get_status_alert(sender_position: Vector2, message : String, type : int):
 	pass
 
 # used by player to receive damage by other players
@@ -190,3 +190,22 @@ remote func set_character_inventory(equipment_list : Array):
 	var gateway_id = get_tree().get_rpc_sender_id()
 #	print("**"+ str(equipment_list))
 	(GameManager.get_character(gateway_id) as Character).set_inventory(equipment_list)
+
+remote func create_monster(monster : Dictionary):
+	pass
+
+remote func update_monster(attribute : String, value):
+	pass
+
+remote func destroy_monster(monster_id : String):
+	pass
+
+remote func attack_monster(monster_id : String, power : int, type : int):
+	var gateway_id = get_tree().get_rpc_sender_id()
+	var monster : Monster = GameManager.get_monster(monster_id)
+	if monster:
+		monster.set_aggressor(gateway_id)
+		monster.receive_damage(power, type)
+
+remote func set_monster_position(monster_id : String, character_position : Vector2, character_direction : Vector2):
+	pass
