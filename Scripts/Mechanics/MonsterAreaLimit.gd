@@ -2,18 +2,18 @@ extends Area2D
 
 class_name MonsterAreaLimit
 
-var monster_dict = {}
 export var unique_area_name : String = ""
-export var db_creature_id : int = 0
+export var creature_load : PackedScene
+export var time_to_respawn : int = 10
 
 func _ready():
 	name = unique_area_name
 	
-	if db_creature_id > 0:
-		monster_dict = DBManager.read_monster(db_creature_id)[0]
-		print(monster_dict)
-		start_spawner()
-	print('---->> ',name)
+	var monster = creature_load.instance()
+	monster.hide()
+	monster.position = Vector2.ZERO
+	call_deferred( 'add_child', monster )
+	call_deferred( 'start_spawner' )
 
 func _on_AreaLimit_body_entered(body : Node):
 	if body.is_in_group('Characters'):
@@ -32,16 +32,16 @@ func _on_AreaLimit_body_exited(body : Node):
 
 func _spawn_monster():
 	randomize()
-	$Monster.set_from_dict(monster_dict)
+	$Monster.set_from_dict(MonsterPreload.monster_data[$Monster.monster_name.to_lower()])
 	$Monster.position = Vector2(-50 + randi() % 100, -50 + randi() % 100)
 	$Monster.show()
-	print('-> ' ,$Monster.gateways_list, ' - ', $Monster.global_position)
+	print('-> ', $Monster, ' * ' ,$Monster.gateways_list, ' - ', $Monster.global_position)
 	for element in $Monster.gateways_list:
 		ConnectionManager.rpc_id(int(element), 'create_monster', $Monster.as_dict())
 
 func start_spawner():
 	if not $Monster.visible:
-		$Spawner.start(2)
+		$Spawner.start(time_to_respawn)
 
 func get_monster():
 	if $Monster.visible:

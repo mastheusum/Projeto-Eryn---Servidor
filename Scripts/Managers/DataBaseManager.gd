@@ -395,36 +395,37 @@ func create_account(account : Dictionary):
 	db.close_db()
 	return err
 
-func read_monster(monster_id : int) -> Array:
-	var monster : Array = []
+func read_all_monster() -> Array:
+	var monster_list : Array = []
 	db.open_db()
-	db.query("SELECT * FROM monster WHERE id = "+str(monster_id)+" LIMIT 1;")
-	monster = db.query_result.duplicate()
+	db.query("SELECT * FROM monster;")
+	monster_list = db.query_result.duplicate()
 	
-	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['helmet'])+' LIMIT 1;')
-	monster[0]['helmet'] = db.query_result[0] if not db.query_result.empty() else {}
-	
-	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['armor'])+' LIMIT 1;')
-	monster[0]['armor'] = db.query_result[0] if not db.query_result.empty() else {}
-	
-	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['legs'])+' LIMIT 1;')
-	monster[0]['legs'] = db.query_result[0] if not db.query_result.empty() else {}
-	
-	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['boots'])+' LIMIT 1;')
-	monster[0]['boots'] = db.query_result[0] if not db.query_result.empty() else {}
-	
-	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['weapon1'])+' LIMIT 1;')
-	monster[0]['weapon1'] = db.query_result[0] if not db.query_result.empty() else {}
-	
-	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['weapon2'])+' LIMIT 1;')
-	monster[0]['weapon2'] = db.query_result[0] if not db.query_result.empty() else {}
-	
-	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['ring1'])+' LIMIT 1;')
-	monster[0]['ring1'] = db.query_result[0] if not db.query_result.empty() else {}
-	
-	db.query('SELECT * FROM item WHERE id = '+str(monster[0]['ring2'])+' LIMIT 1;')
-	monster[0]['ring2'] = db.query_result[0] if not db.query_result.empty() else {}
+	for monster in monster_list:
+		db.query('SELECT * FROM item WHERE id = '+str(monster['helmet'])+' LIMIT 1;')
+		monster['helmet'] = db.query_result[0] if not db.query_result.empty() else {}
+		
+		db.query('SELECT * FROM item WHERE id = '+str(monster['armor'])+' LIMIT 1;')
+		monster['armor'] = db.query_result[0] if not db.query_result.empty() else {}
+		
+		db.query('SELECT * FROM item WHERE id = '+str(monster['legs'])+' LIMIT 1;')
+		monster['legs'] = db.query_result[0] if not db.query_result.empty() else {}
+		
+		db.query('SELECT * FROM item WHERE id = '+str(monster['boots'])+' LIMIT 1;')
+		monster['boots'] = db.query_result[0] if not db.query_result.empty() else {}
+		
+		db.query('SELECT * FROM item WHERE id = '+str(monster['weapon1'])+' LIMIT 1;')
+		monster['weapon1'] = db.query_result[0] if not db.query_result.empty() else {}
+		
+		db.query('SELECT * FROM item WHERE id = '+str(monster['weapon2'])+' LIMIT 1;')
+		monster['weapon2'] = db.query_result[0] if not db.query_result.empty() else {}
+		
+		db.query('SELECT * FROM item WHERE id = '+str(monster['ring1'])+' LIMIT 1;')
+		monster['ring1'] = db.query_result[0] if not db.query_result.empty() else {}
+		
+		db.query('SELECT * FROM item WHERE id = '+str(monster['ring2'])+' LIMIT 1;')
+		monster['ring2'] = db.query_result[0] if not db.query_result.empty() else {}
 	
 	db.close_db()
 	
-	return monster
+	return monster_list

@@ -71,6 +71,7 @@ config/icon="res://icon.png"
 GameManager="*res://Scripts/Managers/GameManager.gd"
 DBManager="*res://Scripts/Managers/DataBaseManager.gd"
 ConnectionManager="*res://Scripts/Managers/ConnectionManager.gd"
+MonsterPreload="*res://Scripts/Managers/MonsterPreload.gd"
 
 [physics]
 

@@ -18,6 +18,11 @@ var _dir : Vector2 = Vector2.ZERO
 var _move_speed : int = 200
 
 func _ready():
+	$SearchRange.connect("body_entered", self, "_on_SearchRange_body_entered")
+	$SearchRange.connect("body_exited", self, "_on_SearchRange_body_exited")
+	$IDLE.connect("timeout", self, "_on_IDLE_timeout")
+	$Attack.connect("timeout", self, "_on_Attack_timeout")
+	
 	set_network_master(1)
 
 func set_new_gateway(gateway : int):
@@ -132,23 +137,13 @@ func receive_damage(value : int, type : int):
 
 # need be better... is usefull only by melle monsters
 func _process(delta):
-	if (not gateways_list.empty()) and visible:
-		if search_range_list.empty():
-			if $IDLE.is_stopped():
-				randomize()
-				_dir = Vector2(rand_range(-10, 10), rand_range(-10, 10)).normalized()
-				$IDLE.start(1)
-			else:
-				move_and_collide(_dir * _move_speed * delta / 2)
-		else:
-			_dir = (search_range_list[0].global_position - global_position).normalized()
-			move_and_collide(_dir * _move_speed * delta)
-		for element in gateways_list:
-			ConnectionManager.rpc_id(int(element), 'set_monster_position', get_parent().name, global_position, _dir)
+	_behaviour(delta)
 
 func _on_SearchRange_body_entered(body : Node):
+	print(1)
 	if body.is_in_group('Character'):
 		search_range_list.append(body)
+		print(2)
 
 func _on_SearchRange_body_exited(body : Node):
 	if body.is_in_group('Character'):
@@ -156,3 +151,24 @@ func _on_SearchRange_body_exited(body : Node):
 
 func _on_IDLE_timeout():
 	pass # Replace with function body.
+
+func _on_Attack_timeout():
+	pass # Replace with function body.
+
+func _behaviour(delta):
+	pass
+#	if (not gateways_list.empty()) and visible:
+#		if search_range_list.empty():
+#			if $IDLE.is_stopped():
+#				randomize()
+#				_dir = Vector2(rand_range(-10, 10), rand_range(-10, 10)).normalized()
+#				$IDLE.start(1)
+#			else:
+#				move_and_collide(_dir * _move_speed * delta / 2)
+#		else:
+#			_dir = (search_range_list[0].global_position - global_position).normalized()
+#			move_and_collide(_dir * _move_speed * delta)
+#		for element in gateways_list:
+#			ConnectionManager.rpc_id(int(element), 'set_monster_position', get_parent().name, global_position, _dir)
+
+

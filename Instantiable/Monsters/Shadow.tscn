@@ -1,0 +1,95 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scripts/Instantiable/Shadow.gd" type="Script" id=1]
+
+[sub_resource type="StyleBoxFlat" id=127]
+bg_color = Color( 0, 0.784314, 0, 1 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id=128]
+bg_color = Color( 0, 0.784314, 0, 0.196078 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="CircleShape2D" id=132]
+radius = 512.0
+
+[node name="Monster" type="KinematicBody2D"]
+script = ExtResource( 1 )
+monster_name = "Shadow"
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_left = -20.0
+margin_top = -20.0
+margin_right = 20.0
+margin_bottom = 20.0
+color = Color( 1, 0.517647, 0.517647, 0.352941 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HUD" type="Node2D" parent="."]
+position = Vector2( 0, -64 )
+z_index = 100
+
+[node name="CharacterName" type="Label" parent="HUD"]
+margin_left = -100.0
+margin_top = -8.0
+margin_right = 100.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 200, 20 )
+text = "Character Name"
+align = 1
+valign = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LifeBar" type="ProgressBar" parent="HUD"]
+margin_left = -50.0
+margin_top = 15.0
+margin_right = 50.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 100, 10 )
+custom_styles/fg = SubResource( 127 )
+custom_styles/bg = SubResource( 128 )
+value = 50.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ManaBar" type="ProgressBar" parent="HUD"]
+visible = false
+margin_left = -50.0
+margin_top = 15.0
+margin_right = 50.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 100, 10 )
+custom_styles/fg = SubResource( 127 )
+custom_styles/bg = SubResource( 128 )
+value = 50.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AggressorList" type="Timer" parent="."]
+one_shot = true
+
+[node name="SearchRange" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SearchRange"]
+shape = SubResource( 132 )
+
+[node name="IDLE" type="Timer" parent="."]
+one_shot = true
+
+[node name="Attack" type="Timer" parent="."]
+one_shot = true

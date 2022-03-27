@@ -90,6 +90,4 @@ shape = SubResource( 132 )
 [node name="IDLE" type="Timer" parent="."]
 one_shot = true
 
-[connection signal="body_entered" from="SearchRange" to="." method="_on_SearchRange_body_entered"]
-[connection signal="body_exited" from="SearchRange" to="." method="_on_SearchRange_body_exited"]
-[connection signal="timeout" from="IDLE" to="." method="_on_IDLE_timeout"]
+[node name="Attack" type="Timer" parent="."]

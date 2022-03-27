@@ -107,8 +107,12 @@ func calculate_current_level():
 	level = 1 + int(sqrt(experience as float) / 10)
 	if old < level:
 		attribute_points += 3
+		life = max_life
+		mana = max_mana
 		ConnectionManager.rpc_id(int(name), 'update_status', int(name), 'attribute_points', attribute_points)
 		ConnectionManager.rpc('update_status', int(name), 'level', level)
+		ConnectionManager.rpc('update_status', int(name), 'life', life)
+		ConnectionManager.rpc('update_status', int(name), 'mana', mana)
 
 func as_dict():
 	var dict = {}
